@@ -3,7 +3,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import ActionChains
 
+from locators.main_page_locators import MainPageLocators
+
 TIMEOUT = 5
+TIMEOUT_TEXT_CHANGE = 15
 
 class BasePage:
     def __init__(self, driver):
@@ -13,10 +16,23 @@ class BasePage:
     @property
     def url(self):
         return self.driver.current_url
+    
+    @allure.step("Кликнуть на кнопку 'Конструктор'")
+    def click_BUTTON_CONST(self):
+        self.click_with_js(MainPageLocators.BUTTON_CONST)
+
+    @allure.step("Кликнуть на кнопку 'Лента Заказов'")
+    def click_BUTTON_ORDER_FEED(self):
+        self.click_with_js(MainPageLocators.BUTTON_ORDER_FEED)
+    
+    @allure.step("Подождать появления реального номера заказа")
+    def wait_for_order_number(self, locator, timeout=TIMEOUT_TEXT_CHANGE):   
+        return WebDriverWait(self.driver, timeout).until(
+            lambda driver: driver.find_element(*locator).text.strip() not in ["9999", "", "0"])
 
     @allure.step("Подождать видимости элемента")
     def wait_for_element(self, locator, timeout=TIMEOUT):
-        return WebDriverWait(self.driver, timeout, poll_frequency=0.5).until(EC.visibility_of_element_located(locator))
+        return WebDriverWait(self.driver, timeout, poll_frequency=0.5).until(EC.visibility_of_element_located(locator))        
 
     @allure.step("Скролл до элемента")
     def scroll_to_element(self, locator, timeout=TIMEOUT):

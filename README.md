@@ -38,6 +38,7 @@
 **Установка зависимостей**
 
 > `$ pip install -r requirements.txt`
+> `$ pip install allure-pytest`
 
 **Запуск автотестов и создание отчета в аллюр**
 

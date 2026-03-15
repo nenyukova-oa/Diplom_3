@@ -1,45 +1,26 @@
 import allure
 
-from selenium.webdriver.support.wait import WebDriverWait
-
 from pages.base_page import BasePage
 from locators.order_page_locators import OrderPageLocators
 from locators.main_page_locators import MainPageLocators
 from curl import *
 
 class OrderPage(BasePage):
-
-    @allure.step("Кликнуть на кнопку 'Конструктор'")
-    def click_BUTTON_CONST(self):
-        self.click_with_js(MainPageLocators.BUTTON_CONST)
-
-    @allure.step("Кликнуть на кнопку 'Лента Заказов'")
-    def click_BUTTON_ORDER_FEED(self):
-        self.click_with_js(MainPageLocators.BUTTON_ORDER_FEED)
-
+    
     @allure.step("Проскроллить и перетянуть элемент булочки в зону сборки бургера")
     def drag_and_drop_bun(self): 
         self.scroll_to_element(MainPageLocators.BUTTON_BUN)       
-        self.drag_and_drop_element(MainPageLocators.BUTTON_BUN, MainPageLocators.BUN_ZONE)
-
-    @allure.step("Проскроллить и перетянуть элемент соуса в зону сборки бургера")
-    def drag_and_drop_sauce(self): 
-        self.scroll_to_element(MainPageLocators.BUTTON_SAUCE)       
-        self.drag_and_drop_element(MainPageLocators.BUTTON_SAUCE, MainPageLocators.BUN_ZONE)
+        self.drag_and_drop_element(MainPageLocators.BUTTON_BUN, MainPageLocators.BUN_ZONE)    
 
     @allure.step("Кликнуть на кнопку 'Оформить заказ'")
     def click_BUTTON_ORDER(self):
         self.click_on_element(OrderPageLocators.BUTTON_ORDER)
-
+   
     @allure.step("Получить текст номера заказа")
-    def get_text_ORDER_NUMBER(self, timeout=15):    
-        element = self.wait_for_element(OrderPageLocators.ORDER_NUMBER)    
-    
-        WebDriverWait(self.driver, timeout).until(
-            lambda driver: driver.find_element(*OrderPageLocators.ORDER_NUMBER).text not in ["9999"])    
-    
-        return element.text
-    
+    def get_text_ORDER_NUMBER(self):    
+        self.wait_for_order_number(OrderPageLocators.ORDER_NUMBER)       
+        return self.get_text_on_element(OrderPageLocators.ORDER_NUMBER).strip()    
+        
     @allure.step("Закрыть окно с номером заказа")
     def click_on_BUTTON_CLOSE(self): 
         self.click_with_js(MainPageLocators.BUTTON_CLOSE)
